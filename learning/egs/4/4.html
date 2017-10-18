@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+               <meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="4.css">
+	<script type="text/javascript">
+	                window.onload=showPic;
+		function showPic(whichpic){
+			var source=whichpic.getAttribute("href");
+			var placeholder=document.getElementById("placeholder");
+			placeholder.setAttribute("src",source);
+			var text=whichpic.getAttribute("title");
+			var description=document.getElementById("description");
+			description.firstChild.nodeValue=text;
+
+		}
+	</script>
+</head>
+<body>
+<h1>Snapshots</h1>
+<ul>
+	<li>
+		<a href="img/1.jpg" title="one" onclick="showPic(this) ;return false;">one</a>
+	</li>
+	<li>
+		<a href="img/2.jpg" title="two" onclick="showPic(this) ;return false;">two</a>
+	</li>
+	<li>
+		<a href="img/3.jpg" title="three"  onclick="showPic(this) ;return false;">three</a>
+	</li>
+	<li>
+		<a href="img/4.jpg" title="four"  onclick="showPic(this) ;return false;">four</a>
+	</li>
+</ul>
+<img id="placeholder" src="img/placeholder.jpg" alt="my image">
+<p id="description">Choose an image</p>
+
+</body>
+</html>
