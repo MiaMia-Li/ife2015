@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="js/util.js"></script>
+	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+    (function handle_1() {
+    var inp = $("#user_input");
+    var out = $("#user_output");
+    $.click("#btn", function () {
+        var value = inp.value.split(/\n|\s+|\,|\，|\、|\;|\；/); //分割成数组。
+        var unValue = uniqArray(value); //数组去重
+        var i = 0;
+        var len = unValue.length;
+        if (len > 10 || unValue == "") {
+            $("p").style.disautoPlay = "block";
+        } else {
+            $("p").style.disautoPlay = "none";
+            for (; i < len; i++) {
+                var trimValue = trim(unValue[i]); //对每一项进行去除首尾空格操作
+                console.log(trimValue);
+                if (trimValue !== "") { //只有在去除首尾空格后不为空的数组才输出。
+                    out.innerHTML += "<label>" + "<input type='checkbox'>" + trimValue + "</label>"
+                }
+            }
+        }
+    })
+})();
+	</script>
+</head>
+<body>
+    <textarea name="user_input" id="user_input" cols="45" rows="10"></textarea>
+    <br>
+    <button id="btn">处理并输出</button>
+    <p>输入的爱好数量不能超过10个，或什么都不输入</p>
+    <form id="user_output"></form>
+</body>
+</html>

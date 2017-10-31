@@ -1,0 +1,48 @@
+<html>
+<head>
+<title></title>
+<style>
+header,footer{
+	width:100%;
+	background-color: green;
+	height: 20px;
+}
+.container{
+	padding: 0 220px 0 200px;
+	overflow: hidden;
+}
+.middle, .left ,.right{
+	height:200px;
+	float:left;
+	position: relative;
+}
+
+.middle{
+	background-color: red;
+	width:100%;
+} 
+.left{
+	background-color: blue;
+	width:200px;
+	margin-left:-100%;
+	left:-200px;
+              }
+
+.right{
+	background-color: yellow;
+	width:220px;
+	margin-left:-220px;
+	right:-220px;
+  }
+</style>
+</head>
+<body>
+<header></header>
+<div class ="container">
+<div class ="middle"></div>
+<div class="left"></div>
+<div  class="right"></div>
+</div>
+<footer></footer>
+</body>
+</html>
