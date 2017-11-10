@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+	<style type="text/css">
+	body{
+	background-color: #ccc;
+	}
+	.container ul{
+	width: 150px;
+    min-height:300px;
+    background-color:#fff;
+    margin:20px;
+	display: block;
+	float: left;
+	padding: 0;
+    border: 1px solid #000;
+	}
+	.container ul li{
+    display: block;
+    border:1px solid black;
+    float: left;
+    width: 150px;
+    height: 35px;
+	margin: -1px;
+	list-style: none;
+    background-color:#ff0000;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+	    <ul>
+		    <li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	    <ul></ul>
+	</div>
+    <script type="text/javascript">
+    $(function(){
+    	drag.init('container')
+    });
+    var drag={
+    	class_name:null, //允许放置的容器
+    	permitDrag:false, //移动标识
+    	_x:0,
+    	_y:0,
+    	_left:0,
+    	_top:0,
+    	old_elm:null,
+    	tmp_elm:null,
+    	new_elm:null,
+    	init:function(className){
+    		drag.class_name=className;
+    		$('.'+drag.class_name).on('mousedown','ul li',function(event){
+    			drag.permitDrag=true;
+    			drag.old_elm=$(this);
+    			drag.mousedown(event);
+    			return false;
+    		});
+    		$(document).mousemove(function(event){
+    			if(!drag.permitDrag) return false;
+    			drag.mousemove(event);
+    			return false;
+    		});
+    		$(document).mouseup(function(event){
+    			if(!drag.permitDrag) return false;
+    			drag.permitDrag=false;
+    			drag.mouseup(event);
+    			return false;
+    		})
+    	},
+    	mousedown:function(event){
+    		console.log("我被mousedown了");
+    		drag.tmp_elm=$(drag.old_elm).clone();
+    		drag._x=$(drag.old_elm).offset().left; 
+    		drag._y=$(drag.old_elm).offset().top;
+    		var e=event||window.event;
+    		drag._left=e.pageX-drag._x; 
+    		$(drag.tmp_elm).css({
+    			'position':'absolute',
+    			'background-color':'#ff7777',
+    			'left':drag._x,
+    			'top':drag._y,
+    		});
+    		//添加临时节点
+    		tmp=$(drag.old_elm).parent().append(drag.tmp_elm);
+    		drag.tmp_elm=$(tmp).find(drag.tmp_elm);
+    		$(drag.tmp_elm).css('cursor','move');
+    	},
+    	mousemove:function(event){
+    		console.log("我被mousemove了");
+    		var e=event||window.event;
+    		var x=e.pageX-drag._left;
+    		var y=e.pageY-drag._top;
+    		var maxL=$(document).width()-$(drag.old_elm).outerWidth();
+    		var maxT=$(document).height()-$(drag.old_elm).outerHeight;
+    		x = x < 0 ? 0: x;
+	        x = x > maxL ? maxL: x;
+	        y = y < 0 ? 0: y;
+	        y = y > maxT ? maxT: y;
+	        $(drag.tmp_elm).css({
+	        	'left':x,
+	        	'top':y,
+	        });
+	    	},
+	    mouseup : function (event){
+	        console.log('我被mouseup了');
+	        //移除临时节点
+	        $(drag.tmp_elm).remove();
+	        var e = event || window.event;
+	        $.each($('.' + drag.class_name + ' ul'), function(index, value){
+            var box_x = $(value).offset().left;    
+            var box_y = $(value).offset().top;      
+            var box_width = $(value).outerWidth(); 
+            var box_height = $(value).outerHeight();
+            if(e.pageX > box_x && e.pageX < box_x-0+box_width && e.pageY > box_y && e.pageY < box_y-0+box_height){
+                if($(value).offset().left !== drag.old_elm.parent().offset().left 
+                || $(value).offset().top !== drag.old_elm.parent().offset().top){
+                    tmp = $(drag.old_elm).clone();
+                    var newObj = $(value).append(tmp);
+                    $(drag.old_elm).remove();
+                    drag.new_elm = $(newObj).find(tmp);
+                }
+            }
+            });
+        },
+
+    }
+    </script>
+</body>
+</html>
