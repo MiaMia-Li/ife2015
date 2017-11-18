@@ -11,7 +11,8 @@ function isFunction(fn) {
 // 使用递归来实现一个深度克隆，可以复制一个目标对象，返回一个完整拷贝
 // 被复制的对象类型会被限制为数字、字符串、布尔、日期、数组、Object对象。不会包含函数、正则对象等
 function cloneObject(src) {
-    var result,oClass=isClass(src);
+    var result,
+    oClass=isClass(src);//判断src的类型
     if(oClass=="Object"){
     	result={};
     }else if (oClass==="Array") {
@@ -19,10 +20,10 @@ function cloneObject(src) {
     }else{
     	return src;
     }
-    for(key in src){
+    for(var key in src){
     	var copy=src[key];
     	if(isClass(copy)=="Object"){
-    		result[key]=arguments.callee(copy);
+    		result[key]=arguments.callee(copy);//匿名函数
     	}else if(isClass(copy)=="Array"){
     		result[key]=arguments.callee(copy);
     	}else{
@@ -37,7 +38,7 @@ function isClass(o){
 	return Object.prototype.toString.call(o).slice(8,-1);
 }
 
-// 测试用例：ar
+// 测试用例
 var srcObj = {
     a: 1,
     b: {
@@ -86,13 +87,6 @@ function trim(str){
     var regex=/^\s*/;
     var regex2=/\s*$/;
     return str.replace(regex,'').replace(regex2,'');
-}
-
-// 很多同学肯定对于上面的代码看不下去，接下来，我们真正实现一个trim
-// 对字符串头尾进行空格字符的去除、包括全角半角空格、Tab等，返回一个字符串
-// 尝试使用一行简洁的正则表达式完成该题目
-function trim(str) {
-    // your implement
 }
 
 // 使用示例
@@ -240,18 +234,157 @@ function Q(selector){
 }
 
 // 可以通过id获取DOM对象，通过#标示，例如
-//$("#adom");  返回id为adom的DOM对象
+$("#adom"); // 返回id为adom的DOM对象
 
 // 可以通过tagName获取DOM对象，例如
-//$("a");  返回第一个<a>对象
+$("a"); // 返回第一个<a>对象
 
 // 可以通过样式名称获取DOM对象，例如
-//$(".classa"); 返回第一个样式定义包含classa的对象
+$(".classa"); // 返回第一个样式定义包含classa的对象
 
 // 可以通过attribute匹配获取DOM对象，例如
-//$("[data-log]"); 返回第一个包含属性data-log的对象
+$("[data-log]"); // 返回第一个包含属性data-log的对象
 
-//$("[data-time=2015]"); 返回第一个包含属性data-time且值为2015的对象
+$("[data-time=2015]"); // 返回第一个包含属性data-time且值为2015的对象
 
 // 可以通过简单的组合提高查询便利性，例如
-//$("#adom .classa"); 返回id为adom的DOM所包含的所有子节点中，第一个样式定义包含classa的对象
+$("#adom .classa"); // 返回id为adom的DOM所包含的所有子节点中，第一个样式定义包含classa的对象
+
+// 给一个element绑定一个针对event事件的响应，响应函数为listener
+function addEvent(element, event, listener) {
+    if(element.addEventListener){
+        element.addEventListener(event,listener,false);
+    }else if(element.attachEvent){
+        element.attachEvent("on"+event,listener);
+    }else{
+        element["on"+event]=listener;
+    }
+}
+function removeEvent(element,event,listener){
+    if(element.removeEventListener){
+        element.removeEventListener(event,listener,false);
+    }else if(element.detachEvent){
+        element.detachEvent("on"+event,listener);
+    }else{
+        element["on"+event]=null;
+    }
+}
+
+function addclicklistener(event) {
+    addEvent(element,"click",listener);
+}
+function addEnterEvent(element,listener){
+    addEvent(element,"keydoen",function(ev){
+        var oEvent=ev||window.event;
+        if(oEvent.keyCode===13){
+            listener();
+        }
+    })
+}
+function delegateEvent(element,tag,eventName,listener){
+    return addEvent(element,eventName,function(ev){
+        var oEvent=ev||event;
+        var target=oEvent.target||oEvent.srcElement;
+        if(target.tagName.toLocaleLowerCase()===tag){
+            listener.call(target,oEvent);
+        }
+    })
+}
+$.on = function (element, type, listener) {
+    return addEvent(element, type, listener);
+};
+$.un = function (element, type, listener) {
+    return removeEvent(element, type, listener);
+};
+$.click = function (element, listener) {
+    return addClickEvent(element, listener);
+}
+$.enter = function (element, listener) {
+    $.enter addEnterEvent(element, listener);
+};
+$.delegate = function (selector, tag, event, listener) {
+    return delegateEvent($(selector), tag, event, listener);
+};
+
+// 判断是否为IE浏览器，返回-1或者版本号
+function isIE() {
+    if("ActiveXObject" in window){
+        return navigator.userAgent.slice(8,11);
+    }else{
+        return-1;
+    }
+}
+
+// 设置cookie
+function setCookie(cookieName, cookieValue, expiredays) {
+    document.cookie=cookieName+"="+cookieValue+";expires"+expires;
+}
+
+// 获取cookie值
+function getCookie(cookieName){
+    var cookie=document.cookie.split(";");
+    for(var i=0;i<cookie.length;i++){
+    	var arr=cookie[i].split("=");
+    	if(arr[0]==cookieName){
+    		return arr[i];
+    	}
+    }
+    return "";
+}
+//学习Ajax，并尝试自己封装一个Ajax方法。实现如下方法：
+
+function ajax(url, options) {
+    var xmlHttpReq=null;
+    if(window.ActiveXObject){ //IE5 IE6
+        xmlHttpReq=new Active XObject("Microsoft.XMLHTTP");
+    }else if(window.xmlHttpRequest){
+        xmlHttpReq=new xmlHttpRequest();l
+    };
+    var param="";
+    var data=options.data?options.data:-1;
+    if(typeof(data)==="object"){
+    	for(var key in data){
+    		if(data.hasOwnProperty(key)){
+    			param+=key+"="+data[key]+"&";
+    		}
+    	}
+    	param.replace(/&$/,"");
+    }else{
+    	param="timestamp="+new Date().getTime();
+    }
+    var type=options.type?options.type.toUpperCase():"GET";
+    if(type==="GET"){
+    	xmlHttpReq.open("GET",url+"?"+param,true);
+    	xmlHttpReq.send();
+    }else{
+    	xmlHttpReq.open("POST",url,true);
+    	xmlHttpReq.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    }
+    xmlHttpReq.onreadystatechange=function(){
+    	if(xmlHttpReq..readystate==4){
+    		if(xmlHttpReq.status==200){
+    			options.onsuccess(xmlHttpReq.responseText,xmlHttpReq);
+    		}else{
+    			if(options.onfail){
+    				options.onfail(xmlHttpReq);
+    			}
+    		}
+    	}
+    }
+    return xmlHttpReq;
+}    
+
+// 使用示例：
+ajax(
+    'http://localhost:8080/server/ajaxtest', 
+    {
+        data: {
+            name: 'simon',
+            password: '123456'
+        },
+        onsuccess: function (responseText, xhr) {
+            console.log(responseText);
+        }
+    }
+);
+
